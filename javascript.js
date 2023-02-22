@@ -4,14 +4,15 @@
 
 function getComputerChoice() {
     let randomNumber = Math.floor(Math.random() * 3);
-    if (randomNumber === 0) {
-        return "Rock";
-    } else if (randomNumber === 1) {
-        return "Paper";
-    } else if (randomNumber === 2) {
-        return "Scissors";
-    } else {
-        return "Something went wrong.";
+    switch (randomNumber) {
+        case 0:
+            return "Rock";
+        case 1:
+            return "Paper";
+        case 2:
+            return "Scissors";
+        default:
+            return "Something went wrong.";
     }
 }
 
@@ -44,39 +45,18 @@ function playRound() {
         return playRound();
     }
 
-    if (playerSelection === "Rock") {
-
-        if (computerSelection === "Rock") {
-            return "It's a tie!";
-        } else if (computerSelection === "Paper") {
-            return "You lose! Paper covers the Rock";
-        } else if (computerSelection === "Scissors") {
-            return "You win! Rock smashes the Scissors";
-        } else {
-            return "Something went wrong.";
-        }
-    } else if (playerSelection === "Paper") {
-        if (computerSelection === "Paper") {
-            return "It's a tie!";
-        } else if (computerSelection === "Scissors") {
-            return "You lose! Scissors cuts the Paper";
-        } else if (computerSelection === "Rock") {
-            return "You win! Paper covers the Rock";
-        } else {
-            return "Something went wrong.";
-        }
-    } else if (playerSelection === "Scissors") {
-        if (computerSelection === "Scissors") {
-            return "It's a tie!";
-        } else if (computerSelection === "Rock") {
-            return "You lose! Rock smashes the Scissors";
-        } else if (computerSelection === "Paper") {
-            return "You win! Scissors cuts the Paper";
-        } else {
-            return "Something went wrong.";
-        }
+    if (playerSelection === computerSelection) {
+        return "It's a tie!";
+    } else if (playerSelection === "Rock" && computerSelection === "Scissors" ||
+                playerSelection === "Paper" && computerSelection === "Rock" ||
+                playerSelection === "Scissors" && computerSelection === "Paper") {
+        return `You win! ${playerSelection} beats ${computerSelection}`;
+    } else if (playerSelection === "Rock" && computerSelection === "Paper" ||
+                playerSelection === "Paper" && computerSelection === "Scissors" ||
+                playerSelection === "Scissors" && computerSelection === "Rock") {
+        return `You lose! ${computerSelection} beats ${playerSelection}`;
     } else {
-        return "Something went terribly wrong";
+        return "Something went terribly wrong."
     }
 }
 
@@ -86,29 +66,29 @@ function playRound() {
 function game() {
     alert("Let's play five rounds of Rock, Paper or Scissors.");
 
-    let x = 0; // Player's points
-    let y = 0; // Computer's points
+    let playerScore = 0; 
+    let computerScore = 0;
 
     for (let i = 0; i < 5; i++) {
-        console.log("ROUND " + (i + 1) + ":")
+        console.log(`ROUND ${i + 1}:`)
         let getRoundResult = playRound();
         console.log(getRoundResult);
 
         if (getRoundResult.includes("win")) {
-            x += 1;      // add point to player
+            playerScore += 1;
         } else if (getRoundResult.includes("lose")) {
-            y += 1;      // add point to computer
+            computerScore += 1;
         }
-        console.log(`SCORE: Player - ${x}, Computer - ${y}`);
+        console.log(`SCORE: Player - ${playerScore}, Computer - ${computerScore}`);
         console.log("");
 
         if (i < 4) {
             //alert("Next round!");
-        } else if (x > y) {
+        } else if (playerScore > computerScore) {
             console.log("You win! Refresh browser to play again.");
-        } else if (x < y) {
+        } else if (playerScore < computerScore) {
             console.log("You lose! Refresh browser to play again.");
-        } else if (x == y) {
+        } else if (playerScore == computerScore) {
             console.log("It's a draw! Refresh browser to play again.");
         }
     }
