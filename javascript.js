@@ -4,11 +4,11 @@ function getComputerChoice() {
     let randomNumber = Math.floor(Math.random() * 3);
     switch (randomNumber) {
         case 0:
-            return "Rock";
+            return "rock";
         case 1:
-            return "Paper";
+            return "paper";
         case 2:
-            return "Scissors";
+            return "scissors";
         default:
             return "Something went wrong.";
     }
@@ -23,13 +23,13 @@ function playRound(playerSelection) {
 
     if (playerSelection === computerSelection) {
         return [playerSelection, computerSelection, "The round is a tie!"];
-    } else if (playerSelection === "Rock" && computerSelection === "Scissors" ||
-                playerSelection === "Paper" && computerSelection === "Rock" ||
-                playerSelection === "Scissors" && computerSelection === "Paper") {
+    } else if (playerSelection === "rock" && computerSelection === "scissors" ||
+                playerSelection === "paper" && computerSelection === "rock" ||
+                playerSelection === "scissors" && computerSelection === "paper") {
         return [playerSelection, computerSelection, "You win the round!"];
-    } else if (playerSelection === "Rock" && computerSelection === "Paper" ||
-                playerSelection === "Paper" && computerSelection === "Scissors" ||
-                playerSelection === "Scissors" && computerSelection === "Rock") {
+    } else if (playerSelection === "rock" && computerSelection === "paper" ||
+                playerSelection === "paper" && computerSelection === "scissors" ||
+                playerSelection === "scissors" && computerSelection === "rock") {
         return [playerSelection, computerSelection, "You lose the round!"];
     } else {
         return "Something went terribly wrong."
@@ -38,62 +38,129 @@ function playRound(playerSelection) {
 
 // all nodes from index.html here 
 
-const buttonsRps = document.getElementsByClassName("btnRps");
+const containerAboveBtns = document.querySelector("#containerAboveBtns");
+const textAboveBtns = document.querySelector("#textAboveBtns");
+
+const buttonContainer = document.querySelector("#buttonContainer");
+const buttonsRps = document.querySelectorAll(".btnRps");
+const buttonStart = document.querySelector("#btnStart");
+
+const btnRock = document.createElement("button");
+btnRock.setAttribute("id", "rock");
+btnRock.classList.add("btnRps");
+btnRock.textContent = "rock";
+
+const btnPaper = document.createElement("button");
+btnPaper.setAttribute("id", "paper");
+btnPaper.classList.add("btnRps");
+btnPaper.textContent = "paper";
+
+const btnScissors = document.createElement("button");
+btnScissors.setAttribute("id", "scissors");
+btnScissors.classList.add("btnRps");
+btnScissors.textContent = "scissors";
 
 const restartGame = document.createElement("button");
 restartGame.setAttribute("id", "restartGame");
 restartGame.textContent = "Play again";
 
-const textContainer = document.querySelector("#textContainer");
-const textRound = document.createElement("div");
-textRound.classList.add("textRound");
+const lineContainer = document.querySelector("#lineContainer");
+const line = document.createElement("div")
+line.setAttribute("id", "line");
 
-const infoContainer = document.querySelector("#infoContainer");
-const info = document.querySelector("#info");
+const containerBelowBtns = document.querySelector("#containerBelowBtns");
+const textRound = document.createElement("div");
+textRound.setAttribute("id", "textRound");
+const textScore = document.createElement("div");
+textScore.setAttribute("id", "textScore");
+
+const declareWinner = document.querySelector("#declareWinner");
+const winnerPlayer = document.createElement("div")
+winnerPlayer.setAttribute("id", "winnerPlayer");
+winnerPlayer.textContent = "You win the game!"
+const winnerComputer = document.createElement("div")
+winnerComputer.setAttribute("id", "winnerComputer");
+winnerComputer.textContent = "Computer won the game!"
 
 
 // listen for click on buttons, play until player or computer has 5 points
 
-function playFiveRounds() {
+let roundCounter = 1;
+let playerScore = 0; 
+let computerScore = 0;
 
-    let playerScore = 0; 
-    let computerScore = 0;
+buttonContainer.addEventListener("click", (event) => {
+    if (event.target.classList.contains("btnRps")) {
+        const result = playRound(event.target.id);
+        textRound.textContent = 
+        `ROUND ${roundCounter}:\nYou chose ${result[0]}\nComputer chose ${result[1]}\n${result[2]}`;
+        
+        if (textRound.textContent.includes("win")) {
+            playerScore += 1;
+        } else if (textRound.textContent.includes("lose")) {
+            computerScore += 1;
+        }
+        
+        roundCounter += 1;
+        textAboveBtns.textContent = (`ROUND ${roundCounter}`);
+        lineContainer.appendChild(line);
+        containerBelowBtns.appendChild(textRound);
+        textScore.textContent = `SCORE:\nPlayer – ${playerScore}\nComputer – ${computerScore}`;
+        containerBelowBtns.appendChild(textScore);
 
-    for (let i = 0; i < buttonsRps.length; i++) {
-        buttonsRps[i].addEventListener("click", (event) => {
-            const result = playRound(event.target.id);
-            textRound.textContent = `You chose ${result[0]}\nComputer chose ${result[1]}\n${result[2]}`;
-
-            console.log(result);
-
-            if (textRound.textContent.includes("win")) {
-                playerScore += 1;
-            } else if (textRound.textContent.includes("lose")) {
-                computerScore += 1;
-            }
-            
-            console.log(textRound.textContent);
-            console.log(playerScore, computerScore);
-            textContainer.appendChild(textRound);
-            info.textContent = playerScore + "-" + computerScore;
-    
-            if (playerScore === 5 || computerScore === 5) {
-                buttonContainer.removeChild(Rock);
-                buttonContainer.removeChild(Paper);
-                buttonContainer.removeChild(Scissors);
-                buttonContainer.appendChild(restartGame)
-                restartGame.addEventListener("click", () => {
-                    location.reload();
-                  });
-            }
-            if (playerScore === 5) {
-                textRound.textContent = "You win the game!";
-            }
-            if (computerScore === 5) {
-                textRound.textContent = "Computer wins the game!";
-            }
-        });
+        if (playerScore === 5 || computerScore === 5) {
+            buttonContainer.removeChild(rock);
+            buttonContainer.removeChild(paper);
+            buttonContainer.removeChild(scissors);
+            buttonContainer.appendChild(restartGame)
+            restartGame.addEventListener("click", () => {
+                location.reload();
+                });
+        }
+        if (playerScore === 5) {
+            declareWinner.appendChild(winnerPlayer);
+        }
+        if (computerScore === 5) {
+            declareWinner.appendChild(winnerComputer);
+        }
     }
-}
+});
 
-playFiveRounds();
+
+// button "animations":
+
+buttonContainer.addEventListener("mouseover", (event) => {
+    if (event.target.tagName === "BUTTON") {
+      event.target.style.backgroundColor = "#D9BD21";
+      event.target.style.color = "#042652";
+      event.target.style.boxShadow = "0px 0px 16px 0px #D9BD21";
+    }
+});
+
+buttonContainer.addEventListener("mouseout", (event) => {
+    if (event.target.tagName === "BUTTON") {
+      event.target.style.backgroundColor = "#042652";
+      event.target.style.color = "#D9BD21"
+      event.target.style.boxShadow = "0px 0px 4px 0px #D9BD21";
+    }
+});
+
+buttonContainer.addEventListener("mousedown", (event) => {
+    if (event.target.tagName === "BUTTON") {
+      event.target.style.transform = "scale(1.1)";
+    }
+});
+
+buttonContainer.addEventListener("mouseup", (event) => {
+    if (event.target.tagName === "BUTTON") {
+      event.target.style.transform = "scale(1)";
+    }
+});
+
+buttonStart.addEventListener("click", () => {
+    buttonContainer.removeChild(btnStart);
+    buttonContainer.appendChild(btnRock);
+    buttonContainer.appendChild(btnPaper);
+    buttonContainer.appendChild(btnScissors);
+    textAboveBtns.textContent = "ROUND 1";
+  });
