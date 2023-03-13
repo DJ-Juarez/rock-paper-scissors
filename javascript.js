@@ -36,13 +36,12 @@ function playRound(playerSelection) {
     }
 }
 
-// all nodes from index.html here 
+// all nodes from html + new nodes
 
 const containerAboveBtns = document.querySelector("#containerAboveBtns");
 const textAboveBtns = document.querySelector("#textAboveBtns");
 
 const buttonContainer = document.querySelector("#buttonContainer");
-const buttonsRps = document.querySelectorAll(".btnRps");
 const buttonStart = document.querySelector("#btnStart");
 
 const btnRock = document.createElement("button");
@@ -91,21 +90,23 @@ let computerScore = 0;
 
 buttonContainer.addEventListener("click", (event) => {
     if (event.target.classList.contains("btnRps")) {
+
+        roundCounter += 1;
+        textAboveBtns.textContent = (`ROUND ${roundCounter}`);
+
+        lineContainer.appendChild(line);
+
         const result = playRound(event.target.id);
         textRound.textContent = 
         `ROUND ${roundCounter}:\nYou chose ${result[0]}\nComputer chose ${result[1]}\n${result[2]}`;
-        
+        containerBelowBtns.appendChild(textRound);
+
         if (textRound.textContent.includes("win")) {
             playerScore += 1;
         } else if (textRound.textContent.includes("lose")) {
             computerScore += 1;
         }
-        
-        roundCounter += 1;
-        textAboveBtns.textContent = (`ROUND ${roundCounter}`);
-        lineContainer.appendChild(line);
-        containerBelowBtns.appendChild(textRound);
-        textScore.textContent = `SCORE:\nPlayer – ${playerScore}\nComputer – ${computerScore}`;
+        textScore.textContent = `SCORE:\nPlayer - ${playerScore}\nComputer - ${computerScore}`;
         containerBelowBtns.appendChild(textScore);
 
         if (playerScore === 5 || computerScore === 5) {
@@ -156,6 +157,9 @@ buttonContainer.addEventListener("mouseup", (event) => {
       event.target.style.transform = "scale(1)";
     }
 });
+
+
+// Starting screen -> Round 1
 
 buttonStart.addEventListener("click", () => {
     buttonContainer.removeChild(btnStart);
